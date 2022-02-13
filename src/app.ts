@@ -19,6 +19,6 @@ app.get('/', (req, res) => {
     })
 });
 
-app.listen(4100, () => {
+app.listen( process.env.PORT || 4100, () => {
     customLog(` ==> Server started on port 4100`);
 })
