@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model facultati {
+  id_facultate Int @default(autoincrement()) @id
+  nume_facultate String @unique
+  nume_prescurtat_facultate String @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  // setare relatie cu tabelul secretari
+  secretari secretari[]
+  // setare relatie cu tabelul studenti
+  studenti studenti[]
+  // setare relatie cu tabelul documente
+  documente documente[]
+}
+
+model secretari {
+  id_secretar Int @default(autoincrement()) @id
+  email String @unique
+  parola String
+  nume String
+  prenume String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  // setare relatie cu tabelul facultati
+  facultati facultati @relation(fields: [id_facultate], references: [id_facultate], onDelete: Cascade, onUpdate: Cascade)
+  id_facultate Int
+}
+
+model studenti {
+  id_student Int @default(autoincrement()) @id
+  email String @unique
+  parola String
+  nume String
+  prenume String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  // setare relatie cu tabelul facultati
+  facultati facultati @relation(fields: [id_facultate], references: [id_facultate], onDelete: Cascade, onUpdate: Cascade)
+  id_facultate Int
+}
+
+model administratori {
+  id_administrator Int @default(autoincrement()) @id
+  email String @unique
+  parola String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model documente {
+  id_document Int @default(autoincrement()) @id
+  nume String @unique
+  html String 
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  // setare relatie cu tabelul facultati
+  facultati facultati @relation(fields: [id_facultate], references: [id_facultate], onDelete: Cascade, onUpdate: Cascade)
+  id_facultate Int
+}
