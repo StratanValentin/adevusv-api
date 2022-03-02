@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { customLog } from "./utils/logging.utils";
 import { router } from "./routes/index.routes";
+require('dotenv').config();
 
 const app = express();
 app.use(cors());
