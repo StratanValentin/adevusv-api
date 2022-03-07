@@ -30,7 +30,6 @@ model secretari {
   email String @unique
   parola String
   nume String
-  prenume String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   // setare relatie cu tabelul facultati
@@ -43,12 +42,12 @@ model studenti {
   email String @unique
   parola String
   nume String
-  prenume String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   // setare relatie cu tabelul facultati
   facultati facultati @relation(fields: [id_facultate], references: [id_facultate], onDelete: Cascade, onUpdate: Cascade)
   id_facultate Int
+  procesare_documente procesare_documente[]
 }
 
 model administratori {
@@ -63,9 +62,23 @@ model documente {
   id_document Int @default(autoincrement()) @id
   nume String @unique
   html String 
+  cuvinte_rezervate Json 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   // setare relatie cu tabelul facultati
   facultati facultati @relation(fields: [id_facultate], references: [id_facultate], onDelete: Cascade, onUpdate: Cascade)
   id_facultate Int
+  procesare_documente procesare_documente[]
+}
+
+model procesare_documente {
+  id_procesare Int @default(autoincrement()) @id
+  status String
+  cuvinte_rezervate Json
+  // setare relatie cu tabelul documente
+  documente documente @relation(fields: [id_document], references: [id_document],  onDelete: Cascade, onUpdate: Cascade)
+  id_document Int
+  // setare relatie cu tabelul studenti
+  studenti studenti @relation(fields: [id_student], references: [id_student], onDelete: Cascade, onUpdate: Cascade)
+  id_student Int
 }
