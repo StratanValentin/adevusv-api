@@ -287,6 +287,9 @@ export const getAllDocumentsInprocessingByStudentId = async (
       id_student,
       status: documentInProgressStatus,
     },
+    include: {
+      documente: true,
+    },
   });
 
   res.send(documents);
