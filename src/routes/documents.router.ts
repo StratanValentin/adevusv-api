@@ -17,3 +17,7 @@ documentsRouter.get(
   "/approval",
   documents.getAllDocumentsInprocessingByFacultyId
 );
+documentsRouter.get(
+  "/reserved/process",
+  documents.getReservedWordsByInProcessDocumentId
+);

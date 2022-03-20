@@ -328,3 +328,32 @@ export const getAllDocumentsInprocessingByFacultyId = async (
 
   res.send(documents);
 };
+
+export const getReservedWordsByInProcessDocumentId = async (
+  req: Request,
+  res: Response
+) => {
+  if (!("query" in req)) {
+    res.send({
+      error: "Query error",
+    });
+    return;
+  }
+
+  if (!req?.query || !req?.query?.id_procesare) {
+    res.send({
+      error: "Id procesare nu a fost primit!",
+    });
+    return;
+  }
+
+  const id_procesare: number = parseInt(req.query.id_procesare as string);
+
+  const reservedWords = await prisma.procesare_documente.findUnique({
+    where: {
+      id_procesare,
+    },
+  });
+
+  res.send(reservedWords);
+};
