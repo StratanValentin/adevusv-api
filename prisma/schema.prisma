@@ -23,6 +23,8 @@ model facultati {
   studenti studenti[]
   // setare relatie cu tabelul documente
   documente documente[]
+  // setare realtie cu tabelul procesare documente
+  procesare_documente procesare_documente[]
 }
 
 model secretari {
@@ -75,10 +77,14 @@ model procesare_documente {
   id_procesare Int @default(autoincrement()) @id
   status String
   cuvinte_rezervate Json
+  html String
   // setare relatie cu tabelul documente
-  documente documente @relation(fields: [id_document], references: [id_document],  onDelete: Cascade, onUpdate: Cascade)
+  documente documente @relation(fields: [id_document], references: [id_document])
   id_document Int
   // setare relatie cu tabelul studenti
   studenti studenti @relation(fields: [id_student], references: [id_student], onDelete: Cascade, onUpdate: Cascade)
   id_student Int
+  // setare relatie cu tabelul facultati
+  facultati facultati @relation(fields: [id_facultate], references: [id_facultate], onDelete: Cascade, onUpdate: Cascade)
+  id_facultate Int
 }

@@ -5,6 +5,8 @@ const himalaya = require("himalaya");
 import PDFDocument from "pdfkit";
 const prisma = new PrismaClient();
 
+import { documentInProgressStatus } from "../constants";
+
 export const getDocuments = async (req: Request, res: Response) => {
   if (!("query" in req)) {
     res.send({
@@ -212,4 +214,50 @@ export const getReservedWordsByDocumentId = async (
   });
 
   res.send(reservedWords);
+};
+
+export const createDocumentRequest = async (req: Request, res: Response) => {
+  if (
+    !("id_document" in req.body) ||
+    !("cuvinte_rezervate" in req.body) ||
+    !("id_student" in req.body)
+  ) {
+    res.send({
+      error: "Datele nu au fost primite",
+    });
+    return;
+  }
+
+  const documentData = await prisma.documente.findUnique({
+    where: {
+      id_document: req.body.id_document,
+    },
+  });
+
+  if (
+    !documentData ||
+    documentData === null ||
+    !("id_document" in documentData)
+  ) {
+    res.send({ errorMessage: "Document not found" });
+    return;
+  }
+
+  if (!documentData?.html) {
+    res.send({ errorMessage: "Document is empty" });
+    return;
+  }
+
+  await prisma.procesare_documente.create({
+    data: {
+      status: documentInProgressStatus,
+      id_document: documentData?.id_document,
+      id_facultate: documentData?.id_facultate,
+      id_student: req.body.id_student,
+      html: documentData?.html,
+      cuvinte_rezervate: req.body.cuvinte_rezervate,
+    },
+  });
+
+  res.send({ message: "Document requested!" });
 };

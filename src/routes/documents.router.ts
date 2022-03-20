@@ -8,3 +8,4 @@ documentsRouter.put("/", documents.updateDocument);
 documentsRouter.post("/pdf", documents.generatePdfFromDocument);
 documentsRouter.post("/", documents.createDocument);
 documentsRouter.get("/reserved", documents.getReservedWordsByDocumentId);
+documentsRouter.post("/request", documents.createDocumentRequest);
