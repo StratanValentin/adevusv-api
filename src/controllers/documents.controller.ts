@@ -294,3 +294,36 @@ export const getAllDocumentsInprocessingByStudentId = async (
 
   res.send(documents);
 };
+
+export const getAllDocumentsInprocessingByFacultyId = async (
+  req: Request,
+  res: Response
+) => {
+  if (!("query" in req)) {
+    res.send({
+      error: "Query error",
+    });
+    return;
+  }
+
+  if (!req?.query || !req?.query?.id_facultate) {
+    res.send({
+      error: "Id faculty nu a fost primit!",
+    });
+    return;
+  }
+
+  const id_facultate: number = parseInt(req.query.id_facultate as string);
+
+  const documents = await prisma.procesare_documente.findMany({
+    where: {
+      id_facultate,
+      status: documentInProgressStatus,
+    },
+    include: {
+      documente: true,
+    },
+  });
+
+  res.send(documents);
+};

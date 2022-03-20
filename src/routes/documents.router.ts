@@ -13,3 +13,7 @@ documentsRouter.get(
   "/inProgress",
   documents.getAllDocumentsInprocessingByStudentId
 );
+documentsRouter.get(
+  "/approval",
+  documents.getAllDocumentsInprocessingByFacultyId
+);
