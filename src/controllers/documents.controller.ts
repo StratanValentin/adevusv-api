@@ -180,3 +180,36 @@ export const generatePdfFromDocument = async (req: Request, res: Response) => {
 
   doc.end();
 };
+
+export const getReservedWordsByDocumentId = async (
+  req: Request,
+  res: Response
+) => {
+  if (!("query" in req)) {
+    res.send({
+      error: "Query error",
+    });
+    return;
+  }
+
+  if (!req?.query || !req?.query?.id_document) {
+    res.send({
+      error: "Id document nu a fost primit!",
+    });
+    return;
+  }
+
+  const id_document: number = parseInt(req.query.id_document as string);
+
+  const reservedWords = await prisma.documente.findUnique({
+    select: {
+      id_document: true,
+      cuvinte_rezervate: true,
+    },
+    where: {
+      id_document,
+    },
+  });
+
+  res.send(reservedWords);
+};
