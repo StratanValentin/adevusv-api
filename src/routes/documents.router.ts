@@ -9,3 +9,7 @@ documentsRouter.post("/pdf", documents.generatePdfFromDocument);
 documentsRouter.post("/", documents.createDocument);
 documentsRouter.get("/reserved", documents.getReservedWordsByDocumentId);
 documentsRouter.post("/request", documents.createDocumentRequest);
+documentsRouter.get(
+  "/inProgress",
+  documents.getAllDocumentsInprocessingByStudentId
+);
