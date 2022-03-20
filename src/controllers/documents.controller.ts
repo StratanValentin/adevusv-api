@@ -322,6 +322,7 @@ export const getAllDocumentsInprocessingByFacultyId = async (
     },
     include: {
       documente: true,
+      studenti: true,
     },
   });
 
