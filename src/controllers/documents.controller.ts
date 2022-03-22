@@ -406,6 +406,7 @@ export const approveInProcessingDocument = async (
     where: { id_procesare },
     data: {
       status: documentApprovedStatus,
+      html: req.body.html,
     },
   });
   res.send(updateResponse);
