@@ -21,3 +21,5 @@ documentsRouter.get(
   "/reserved/process",
   documents.getReservedWordsByInProcessDocumentId
 );
+documentsRouter.post("/approve", documents.approveInProcessingDocument);
+documentsRouter.post("/reject", documents.rejectInProcessingDocument);

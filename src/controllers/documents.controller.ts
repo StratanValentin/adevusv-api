@@ -5,7 +5,7 @@ const himalaya = require("himalaya");
 import PDFDocument from "pdfkit";
 const prisma = new PrismaClient();
 
-import { documentInProgressStatus } from "../constants";
+import { documentInProgressStatus, documentRejectedStatus } from "../constants";
 
 export const getDocuments = async (req: Request, res: Response) => {
   if (!("query" in req)) {
@@ -357,3 +357,35 @@ export const getReservedWordsByInProcessDocumentId = async (
 
   res.send(reservedWords);
 };
+
+export const rejectInProcessingDocument = async (
+  req: Request,
+  res: Response
+) => {
+  if (!("query" in req)) {
+    res.send({
+      error: "Query error",
+    });
+    return;
+  }
+
+  if (!req?.query || !req?.query?.id_procesare) {
+    res.send({
+      error: "Id procesare nu a fost primit!",
+    });
+    return;
+  }
+  const id_procesare: number = parseInt(req.query.id_procesare as string);
+  const updateResponse = await prisma.procesare_documente.update({
+    where: { id_procesare },
+    data: {
+      status: documentRejectedStatus,
+    },
+  });
+  res.send(updateResponse);
+};
+
+export const approveInProcessingDocument = async (
+  req: Request,
+  res: Response
+) => {};
