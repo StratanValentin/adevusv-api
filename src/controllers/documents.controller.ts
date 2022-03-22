@@ -392,7 +392,24 @@ export const rejectInProcessingDocument = async (
 export const approveInProcessingDocument = async (
   req: Request,
   res: Response
-) => {};
+) => {
+  if (!("id_procesare" in req.body) || !("html" in req.body)) {
+    res.send({
+      error: "Datele nu au fost primite",
+    });
+    return;
+  }
+
+  const id_procesare: number = parseInt(req.body.id_procesare as string);
+
+  const updateResponse = await prisma.procesare_documente.update({
+    where: { id_procesare },
+    data: {
+      status: documentApprovedStatus,
+    },
+  });
+  res.send(updateResponse);
+};
 
 export const getAllDocumentsProcessedByStudentId = async (
   req: Request,
@@ -418,6 +435,7 @@ export const getAllDocumentsProcessedByStudentId = async (
     where: {
       id_student,
       status: documentRejectedStatus || documentApprovedStatus,
+      html: req.body.html,
     },
     include: {
       documente: true,
