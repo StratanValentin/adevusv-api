@@ -23,3 +23,7 @@ documentsRouter.get(
 );
 documentsRouter.post("/approve", documents.approveInProcessingDocument);
 documentsRouter.post("/reject", documents.rejectInProcessingDocument);
+documentsRouter.get(
+  "/processed",
+  documents.getAllDocumentsProcessedByStudentId
+);
