@@ -434,7 +434,9 @@ export const getAllDocumentsProcessedByStudentId = async (
   const documents = await prisma.procesare_documente.findMany({
     where: {
       id_student,
-      status: documentRejectedStatus || documentApprovedStatus,
+      status: {
+        in: [documentRejectedStatus, documentApprovedStatus],
+      },
       html: req.body.html,
     },
     include: {
