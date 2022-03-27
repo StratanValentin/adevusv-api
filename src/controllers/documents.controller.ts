@@ -384,6 +384,7 @@ export const rejectInProcessingDocument = async (
     where: { id_procesare },
     data: {
       status: documentRejectedStatus,
+      mesaj_de_refuz: req.body.mesaj,
     },
   });
   res.send(updateResponse);
