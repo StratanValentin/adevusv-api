@@ -44,6 +44,11 @@ model studenti {
   email String @unique
   parola String
   nume String
+  cnp BigInt
+  an Int
+  specializare String
+  taxa Boolean
+  grupa String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   // setare relatie cu tabelul facultati
