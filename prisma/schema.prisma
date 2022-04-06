@@ -44,6 +44,11 @@ model studenti {
   email String @unique
   parola String
   nume String
+  cnp BigInt
+  an Int
+  specializare String
+  taxa Boolean
+  grupa String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   // setare relatie cu tabelul facultati
@@ -87,4 +92,7 @@ model procesare_documente {
   // setare relatie cu tabelul facultati
   facultati facultati @relation(fields: [id_facultate], references: [id_facultate], onDelete: Cascade, onUpdate: Cascade)
   id_facultate Int
+  mesaj_de_refuz String? 
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }

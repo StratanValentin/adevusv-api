@@ -1,3 +1,3 @@
 export const documentInProgressStatus = "inProgress";
-export const documentDeniedStatus = "denied";
+export const documentRejectedStatus = "rejected";
 export const documentApprovedStatus = "approved";

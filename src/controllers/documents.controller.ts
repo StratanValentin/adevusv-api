@@ -5,7 +5,11 @@ const himalaya = require("himalaya");
 import PDFDocument from "pdfkit";
 const prisma = new PrismaClient();
 
-import { documentInProgressStatus } from "../constants";
+import {
+  documentApprovedStatus,
+  documentInProgressStatus,
+  documentRejectedStatus,
+} from "../constants";
 
 export const getDocuments = async (req: Request, res: Response) => {
   if (!("query" in req)) {
@@ -356,4 +360,91 @@ export const getReservedWordsByInProcessDocumentId = async (
   });
 
   res.send(reservedWords);
+};
+
+export const rejectInProcessingDocument = async (
+  req: Request,
+  res: Response
+) => {
+  if (!("query" in req)) {
+    res.send({
+      error: "Query error",
+    });
+    return;
+  }
+
+  if (!req?.query || !req?.query?.id_procesare) {
+    res.send({
+      error: "Id procesare nu a fost primit!",
+    });
+    return;
+  }
+  const id_procesare: number = parseInt(req.query.id_procesare as string);
+  const updateResponse = await prisma.procesare_documente.update({
+    where: { id_procesare },
+    data: {
+      status: documentRejectedStatus,
+      mesaj_de_refuz: req.body.mesaj,
+    },
+  });
+  res.send(updateResponse);
+};
+
+export const approveInProcessingDocument = async (
+  req: Request,
+  res: Response
+) => {
+  if (!("id_procesare" in req.body) || !("html" in req.body)) {
+    res.send({
+      error: "Datele nu au fost primite",
+    });
+    return;
+  }
+
+  const id_procesare: number = parseInt(req.body.id_procesare as string);
+
+  const updateResponse = await prisma.procesare_documente.update({
+    where: { id_procesare },
+    data: {
+      status: documentApprovedStatus,
+      html: req.body.html,
+    },
+  });
+  res.send(updateResponse);
+};
+
+export const getAllDocumentsProcessedByStudentId = async (
+  req: Request,
+  res: Response
+) => {
+  if (!("query" in req)) {
+    res.send({
+      error: "Query error",
+    });
+    return;
+  }
+
+  if (!req?.query || !req?.query?.id_student) {
+    res.send({
+      error: "Id student nu a fost primit!",
+    });
+    return;
+  }
+
+  const id_student: number = parseInt(req.query.id_student as string);
+
+  const documents = await prisma.procesare_documente.findMany({
+    where: {
+      id_student,
+      status: {
+        in: [documentRejectedStatus, documentApprovedStatus],
+      },
+      html: req.body.html,
+    },
+    include: {
+      documente: true,
+    },
+  });
+
+  res.send(documents);
 };
