@@ -99,7 +99,7 @@ export const getStudentsLists = async (req: Request, res: Response) => {
         email,
         cnp,
         name: nume,
-        taxa: taxa ? "fara taxa" : "cu taxa",
+        taxa: taxa ? "cu taxa" : "fara taxa",
       });
     }
   }
