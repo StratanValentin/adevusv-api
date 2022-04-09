@@ -44,7 +44,7 @@ model studenti {
   email String @unique
   parola String
   nume String
-  cnp BigInt
+  cnp String
   an Int
   specializare String
   taxa Boolean
