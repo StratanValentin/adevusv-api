@@ -104,5 +104,14 @@ export const getStudentsLists = async (req: Request, res: Response) => {
     }
   }
 
+  for (let specialization of finalList) {
+    specialization.years.sort((item1: any, item2: any) => {
+      if (item1.year < item2.year) return -1;
+      else return 1;
+    });
+
+    finalList[specialization] = specialization;
+  }
+
   res.send(finalList);
 };
