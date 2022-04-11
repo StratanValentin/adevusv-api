@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { customLog } from "./utils/logging.utils";
 import { router } from "./routes/index.routes";
+
 require("dotenv").config();
 
 const app = express();
@@ -14,6 +15,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(express.static("uploads"));
 app.use(router);
 
 app.get("/", (req, res) => {

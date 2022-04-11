@@ -66,7 +66,13 @@ export const updateDocument = async (req: Request, res: Response) => {
 };
 
 export const createDocument = async (req: Request, res: Response) => {
+  console.log(`IN CREATE DOC`);
+
+  console.log(req.body);
+
   if (
+    !req ||
+    !("body" in req) ||
     !("nume" in req.body) ||
     !("html" in req.body) ||
     !("cuvinte_rezervate" in req.body)
@@ -74,7 +80,12 @@ export const createDocument = async (req: Request, res: Response) => {
     res.send({
       error: "Datele nu au fost primite",
     });
+    return;
   }
+
+  console.log("AICI");
+
+  console.log(req.body);
 
   await prisma.documente.create({
     data: {
