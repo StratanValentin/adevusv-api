@@ -115,3 +115,43 @@ export const getStudentsLists = async (req: Request, res: Response) => {
 
   res.send(finalList);
 };
+
+export const getStudentById = async (req: Request, res: Response) => {
+  if (!("query" in req)) {
+    res.send({
+      error: "Query error",
+    });
+    return;
+  }
+
+  if (!req?.query || !req?.query?.idStudent) {
+    res.send({
+      error: "Id student nu a fost primit!",
+    });
+    return;
+  }
+
+  const idStudent: number = parseInt(req.query.idStudent as string);
+
+  if (isNaN(idStudent)) {
+    res.send({
+      error: "Id secretar NaN!",
+    });
+    return;
+  }
+
+  const student = await prisma.studenti.findUnique({
+    where: {
+      id_student: idStudent,
+    },
+  });
+
+  if (!student) {
+    res.send({
+      message: "Student nu a fost gasita.",
+    });
+    return;
+  }
+
+  res.send(student);
+};
