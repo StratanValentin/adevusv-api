@@ -245,7 +245,7 @@ export const createDocumentRequest = async (req: Request, res: Response) => {
 
   const documentData = await prisma.documente.findUnique({
     where: {
-      id_document: req.body.id_document,
+      id_document: parseInt(req.body.id_document),
     },
   });
 
@@ -423,7 +423,40 @@ export const approveInProcessingDocument = async (
   });
   res.send(updateResponse);
 };
+/*
+export const getAllDocumentsInprocessingByStudentId = async (
+  req: Request,
+  res: Response
+) => {
+  if (!("query" in req)) {
+    res.send({
+      error: "Query error",
+    });
+    return;
+  }
 
+  if (!req?.query || !req?.query?.id_student) {
+    res.send({
+      error: "Id student nu a fost primit!",
+    });
+    return;
+  }
+
+  const id_student: number = parseInt(req.query.id_student as string);
+
+  const documents = await prisma.procesare_documente.findMany({
+    where: {
+      id_student,
+      status: documentInProgressStatus,
+    },
+    include: {
+      documente: true,
+    },
+  });
+
+  res.send(documents);
+};
+*/
 export const getAllDocumentsProcessedByStudentId = async (
   req: Request,
   res: Response
@@ -448,7 +481,11 @@ export const getAllDocumentsProcessedByStudentId = async (
     where: {
       id_student,
       status: {
-        in: [documentRejectedStatus, documentApprovedStatus],
+        in: [
+          documentRejectedStatus,
+          documentApprovedStatus,
+          documentInProgressStatus,
+        ],
       },
       html: req.body.html,
     },

@@ -144,6 +144,9 @@ export const getStudentById = async (req: Request, res: Response) => {
     where: {
       id_student: idStudent,
     },
+    include: {
+      facultati: true,
+    },
   });
 
   if (!student) {
