@@ -53,7 +53,7 @@ export const updateDocument = async (req: Request, res: Response) => {
 
   await prisma.documente.update({
     where: {
-      id_document: req.body.id_document,
+      id_document: parseInt(req.body.id_document as string),
     },
     data: {
       nume: req.body.nume,
@@ -495,4 +495,63 @@ export const getAllDocumentsProcessedByStudentId = async (
   });
 
   res.send(documents);
+};
+
+export const getDocumentData = async (req: Request, res: Response) => {
+  if (!("query" in req)) {
+    res.send({
+      error: "Query error",
+    });
+    return;
+  }
+
+  if (!req?.query || !req?.query?.idDocument) {
+    res.send({
+      error: "Id document nu a fost primit!",
+    });
+    return;
+  }
+
+  const id_document: number = parseInt(req.query.idDocument as string);
+
+  const data = await prisma.documente.findUnique({
+    where: {
+      id_document,
+    },
+  });
+
+  res.send(data);
+};
+
+export const deleteDocumentById = async (req: Request, res: Response) => {
+  if (!("query" in req)) {
+    res.send({
+      error: "Query error",
+    });
+    return;
+  }
+
+  if (!req?.query || !req?.query?.idDocument) {
+    res.send({
+      error: "Id document nu a fost primit!",
+    });
+    return;
+  }
+
+  const idDocument: number = parseInt(req.query.idDocument as string);
+
+  if (isNaN(idDocument)) {
+    res.send({
+      error: "Id document NaN!",
+    });
+    return;
+  }
+
+  const document = await prisma.documente.delete({
+    where: {
+      id_document: idDocument,
+    },
+  });
+
+  res.send(document);
 };

@@ -27,3 +27,5 @@ documentsRouter.get(
   "/processed",
   documents.getAllDocumentsProcessedByStudentId
 );
+documentsRouter.get("/data", documents.getDocumentData);
+documentsRouter.delete("/", documents.deleteDocumentById);
