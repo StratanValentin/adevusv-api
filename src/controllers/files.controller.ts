@@ -13,6 +13,8 @@ export const parseSpreadsheet = async (req: Request, res: Response) => {
 
   let dataArray: any = [];
 
+  res.send({ message: "Spreadsheet endpoint" });
+
   for (let sheet of workbook.SheetNames) {
     dataArray = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
     let i = 0;
@@ -20,9 +22,16 @@ export const parseSpreadsheet = async (req: Request, res: Response) => {
       // console.log(data);
       i++;
 
-      if (i > 15) break;
+      // if (i > 5) break;
 
       try {
+        console.log({
+          email: data.Email,
+          an: data.An,
+          specializare: data.Specializare,
+          grupa: data.Grupa,
+        });
+
         await prisma.studenti.upsert({
           where: {
             email: data.Email,
@@ -60,8 +69,7 @@ export const parseSpreadsheet = async (req: Request, res: Response) => {
       }
     }
   }
-
-  res.send({ message: "Spreadsheet endpoint" });
+  return;
 };
 
 // export const parseDocx = async (req: Request, res: Response) => {
@@ -237,3 +245,115 @@ async function htmlProcess(path: any) {
 
   return convertedDocxToHtml;
 }
+
+export const signatureUpload = async (req: Request, res: Response) => {
+  try {
+    if (!("query" in req)) {
+      res.send({
+        error: "Query error",
+      });
+      return;
+    }
+
+    if (!req?.query || !req?.query?.idSecretary) {
+      res.send({
+        error: "Id secretar nu a fost primit!",
+      });
+      return;
+    }
+
+    const idSecretary: number = parseInt(req.query.idSecretary as string);
+
+    if (isNaN(idSecretary)) {
+      res.send({
+        error: "Id secretar NaN!",
+      });
+      return;
+    }
+
+    const secretary = await prisma.secretari.findFirst({
+      where: {
+        id_secretar: idSecretary,
+      },
+    });
+
+    // console.log(secretary);
+    // console.log(req.body);
+    if (secretary) {
+      const oldFile = secretary.semnatura;
+
+      // up date secretary and set new filename
+      await prisma.secretari.update({
+        where: {
+          id_secretar: secretary.id_secretar,
+        },
+        data: {
+          semnatura: req.body.name,
+        },
+      });
+      // remove old file
+      const filePath = path.join(
+        __dirname + "/../../" + "uploads/" + `${oldFile}`
+      );
+      fs.rmSync(filePath, {
+        recursive: true,
+      });
+    }
+
+    res.status(200).send({});
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const deleteFromSpreadsheet = async (req: Request, res: Response) => {
+  console.log(`Received file:`);
+
+  console.log(req.file);
+
+  const workbook = await XLSX.read(req.file?.buffer);
+
+  let dataArray: any = [];
+
+  res.send({ message: "Spreadsheet endpoint" });
+
+  for (let sheet of workbook.SheetNames) {
+    dataArray = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
+    let i = 0;
+
+    // await prisma.studenti.deleteMany({
+    //   where: {
+    //     email: {
+    //       in: dataArray.map((a: any) => a.Email),
+    //     },
+    //   },
+    // });
+
+    for (let data of dataArray) {
+      // console.log(data);
+      i++;
+
+      if (i > 2) break;
+
+      try {
+        console.log({
+          email: data.Email,
+          an: data.An,
+          specializare: data.Specializare,
+          grupa: data.Grupa,
+        });
+
+        await prisma.studenti.delete({
+          where: {
+            email: data.Email,
+          },
+        });
+
+        console.log(`==> ${data.Nr} deleted!`);
+      } catch (error) {
+        console.log(`==> Upsert Error: ${error}`);
+      }
+    }
+  }
+  return;
+};

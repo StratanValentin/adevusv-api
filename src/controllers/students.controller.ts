@@ -158,3 +158,71 @@ export const getStudentById = async (req: Request, res: Response) => {
 
   res.send(student);
 };
+
+export const deleteStudentById = async (req: Request, res: Response) => {
+  if (!("query" in req)) {
+    res.send({
+      error: "Query error",
+    });
+    return;
+  }
+
+  if (!req?.query || !req?.query?.idStudent) {
+    res.send({
+      error: "Id secretar nu a fost primit!",
+    });
+    return;
+  }
+
+  const idStudent: number = parseInt(req.query.idStudent as string);
+
+  if (isNaN(idStudent)) {
+    res.send({
+      error: "Id student NaN!",
+    });
+    return;
+  }
+
+  const student = await prisma.studenti.delete({
+    where: {
+      id_student: idStudent,
+    },
+  });
+
+  res.send(student);
+};
+
+export const updateStudent = async (req: Request, res: Response) => {
+  if (
+    !("body" in req) ||
+    !("idStudent" in req.body) ||
+    !("email" in req.body) ||
+    !("name" in req.body) ||
+    !("cnp" in req.body) ||
+    !("group" in req.body) ||
+    !("specialization" in req.body) ||
+    !("taxa" in req.body)
+  ) {
+    res.send({
+      errorMessage: "Invalid data provided",
+    });
+    return;
+  }
+  const idStudent: number = parseInt(req.body.idStudent as string);
+
+  const secretary = await prisma.studenti.update({
+    where: {
+      id_student: idStudent,
+    },
+    data: {
+      email: req.body.email,
+      nume: req.body.name,
+      cnp: req.body.cnp,
+      grupa: req.body.group,
+      specializare: req.body.specialization,
+      taxa: req.body.taxa,
+    },
+  });
+
+  res.send(secretary);
+};
