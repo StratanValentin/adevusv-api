@@ -21,3 +21,5 @@ npx prisma migrate dev --name init
 npx prisma db seed
 
 # 5 generate prisma client after migration
+
+npx prisma generate
