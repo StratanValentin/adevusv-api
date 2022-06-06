@@ -29,3 +29,7 @@ documentsRouter.get(
 );
 documentsRouter.get("/data", documents.getDocumentData);
 documentsRouter.delete("/", documents.deleteDocumentById);
+documentsRouter.post(
+  "/facultyPdf",
+  documents.generatePdfFromDocumentWithFaculty
+);
