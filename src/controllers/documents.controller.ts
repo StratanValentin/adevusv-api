@@ -725,7 +725,14 @@ export const generatePdfFromDocumentWithFaculty = async (
         ),
         undefined,
         undefined,
-        { align: "center" }
+        { align: "center", fit: [100, 100] }
+      );
+    } else if (item.content.includes("#stampila decan%")) {
+      doc.image(
+        path.join(__dirname + "/../../" + "uploads/" + `${faculty?.stampila}`),
+        undefined,
+        undefined,
+        { align: "center", fit: [100, 100] }
       );
     } else {
       doc

@@ -15,6 +15,7 @@ model facultati {
   id_facultate Int @default(autoincrement()) @id
   nume_facultate String @unique
   nume_prescurtat_facultate String @unique
+  stampila String?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   // setare relatie cu tabelul secretari

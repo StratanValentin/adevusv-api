@@ -49,3 +49,9 @@ filesRouter.post(
   signaturesUpload.single("file"),
   filesController.signatureUpload
 );
+
+filesRouter.post(
+  "/stamps",
+  signaturesUpload.single("file"),
+  filesController.stampUpload
+);

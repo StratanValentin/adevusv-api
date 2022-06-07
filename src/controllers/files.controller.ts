@@ -357,3 +357,63 @@ export const deleteFromSpreadsheet = async (req: Request, res: Response) => {
   }
   return;
 };
+
+export const stampUpload = async (req: Request, res: Response) => {
+  try {
+    if (!("query" in req)) {
+      res.send({
+        error: "Query error",
+      });
+      return;
+    }
+
+    if (!req?.query || !req?.query?.idFaculty) {
+      res.send({
+        error: "Id secretar nu a fost primit!",
+      });
+      return;
+    }
+
+    const idFaculty: number = parseInt(req.query.idFaculty as string);
+
+    if (isNaN(idFaculty)) {
+      res.send({
+        error: "Id secretar NaN!",
+      });
+      return;
+    }
+
+    const faculty = await prisma.facultati.findFirst({
+      where: {
+        id_facultate: idFaculty,
+      },
+    });
+
+    // console.log(secretary);
+    // console.log(req.body);
+    if (faculty) {
+      const oldFile = faculty.stampila;
+
+      // up date secretary and set new filename
+      await prisma.facultati.update({
+        where: {
+          id_facultate: faculty.id_facultate,
+        },
+        data: {
+          stampila: req.body.name,
+        },
+      });
+      // remove old file
+      const filePath = path.join(
+        __dirname + "/../../" + "uploads/" + `${oldFile}`
+      );
+      fs.rmSync(filePath, {
+        recursive: true,
+      });
+    }
+
+    res.status(200).send({});
+  } catch (err) {
+    console.log(err);
+  }
+};
